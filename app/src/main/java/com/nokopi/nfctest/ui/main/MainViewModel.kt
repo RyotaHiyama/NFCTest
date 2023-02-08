@@ -1,5 +1,6 @@
 package com.nokopi.nfctest.ui.main
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +15,7 @@ class MainViewModel : ViewModel() {
         get() = _nfcData
 
     fun updateNFCData(data: String){
+        Log.i("updateNFCData", data)
         _nfcData.value = data
     }
 }

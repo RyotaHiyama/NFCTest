@@ -1,25 +1,28 @@
 package com.nokopi.nfctest
 
+import android.app.Activity
+import android.content.Context
 import android.nfc.NfcAdapter
+import android.nfc.NfcManager
 import android.nfc.Tag
 import android.nfc.tech.NfcF
 import android.os.Looper
 import android.os.Message
 import android.util.Log
-import androidx.fragment.app.FragmentActivity
-import com.nokopi.nfctest.ui.main.MainFragment
 
-class NFCReader(private val activity: FragmentActivity): android.os.Handler(Looper.getMainLooper()) {
+class NFCReader(private val context: Context, private val activity: Activity): android.os.Handler(Looper.getMainLooper()) {
+    private var nfcManager: NfcManager? = null
     private var nfcAdapter : NfcAdapter? = null
     private var callback : CustomReaderCallback? = null
 
-    private var listener: MainFragment.NFCReaderInterface? = null
+    private var listener: MainActivity.NFCReaderInterface? = null
     interface Listener
 
     fun start(){
         callback = CustomReaderCallback()
         callback?.setHandler(this)
-        nfcAdapter = NfcAdapter.getDefaultAdapter(activity)
+        nfcManager = context.getSystemService(Context.NFC_SERVICE) as NfcManager?
+        nfcAdapter = nfcManager!!.defaultAdapter
         nfcAdapter!!.enableReaderMode(activity,callback
             ,NfcAdapter.FLAG_READER_NFC_F or
                     NfcAdapter.FLAG_READER_NFC_A or
@@ -42,8 +45,8 @@ class NFCReader(private val activity: FragmentActivity): android.os.Handler(Loop
     }
 
     fun setListener(listener: Listener?) {         // イベント受け取り先を設定
-        if (listener is MainFragment.NFCReaderInterface) {
-            this.listener = listener as MainFragment.NFCReaderInterface
+        if (listener is MainActivity.NFCReaderInterface) {
+            this.listener = listener
         }
     }
 
